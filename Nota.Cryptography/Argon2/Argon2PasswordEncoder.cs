@@ -18,10 +18,6 @@
 // https://github.com/spring-projects/spring-security/tree/main/crypto/src/main/java/org/springframework/security/crypto/argon2
 using System;
 using System.Linq;
-using System.Security.Cryptography;
-
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
