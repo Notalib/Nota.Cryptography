@@ -16,7 +16,6 @@
 
 using System;
 using System.Linq;
-using System.Security.Cryptography;
 
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Macs;
@@ -25,25 +24,20 @@ using Org.BouncyCastle.Crypto.Parameters;
 namespace Nota.Cryptography;
 
 /// <summary>
-/// Implementation of the Sodium SecretBox algorithm by Topaco (https://stackoverflow.com/a/78742619),
-/// using primitives from BouncyCastle.NET.
+/// Implementation of the Sodium SecretBox algorithm using primitives from BouncyCastle.NET.
+/// Made by Topaco (https://stackoverflow.com/a/78742619),
 /// </summary>
 public static class SecretBox
 {
-    private const int NonceBytes = 192 / 8;
+    public const int NonceBytes = 192 / 8;
 
-    private const int KeyBytes = 256 / 8;
+    public const int KeyBytes = 256 / 8;
 
     // Poly1305 implementation uses a 128 bit MAC.
-    private const int MacBytes = 128 / 8;
+    public const int MacBytes = 128 / 8;
 
-    public static byte[] Encrypt(byte[] key, byte[] plaintext)
+    internal static byte[] Encrypt(byte[] key, byte[] nonce, byte[] plaintext)
     {
-        using RandomNumberGenerator rng = new RandomNumberGenerator();
-
-        // generate random nonce
-        byte[] nonce = rng.GetBytes(NonceBytes);
-
         XSalsa20Engine xSalsa20Engine = new();
         xSalsa20Engine.Init(true, new ParametersWithIV(new KeyParameter(key), nonce));
 
@@ -66,6 +60,16 @@ public static class SecretBox
         // concatenate, e.g. nonce|mac|ciphertext
         return nonce.Concat(mac).Concat(ciphertext).ToArray();
     }
+    
+    public static byte[] Encrypt(byte[] key, byte[] plaintext)
+    {
+        using RandomNumberGenerator rng = new();
+
+        // generate random nonce
+        byte[] nonce = rng.GetBytes(NonceBytes);
+
+        return Encrypt(key, nonce, plaintext);
+    }
 
     public static byte[]? Decrypt(byte[] key, byte[] nonceMacCiphertext)
     {
@@ -77,8 +81,8 @@ public static class SecretBox
         byte[] ciphertext = new byte[nonceMacCiphertext.Length - MacBytes - NonceBytes];
 
         Array.Copy(nonceMacCiphertext, 0, nonce, 0, nonce.Length);
-        Array.Copy(nonceMacCiphertext, NonceBytes, mac, NonceBytes, MacBytes);
-        Array.Copy(nonceMacCiphertext, NonceBytes + MacBytes, ciphertext, NonceBytes + MacBytes, nonceMacCiphertext.Length - NonceBytes - MacBytes);
+        Array.Copy(nonceMacCiphertext, NonceBytes, mac, 0, MacBytes);
+        Array.Copy(nonceMacCiphertext, NonceBytes + MacBytes, ciphertext, 0, nonceMacCiphertext.Length - NonceBytes - MacBytes);
 
         XSalsa20Engine xSalsa20Engine = new();
         xSalsa20Engine.Init(false, new ParametersWithIV(new KeyParameter(key), nonce));
