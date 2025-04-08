@@ -27,4 +27,20 @@ public static class Argon2Constants
     public const int Version10 = 0x10;
 
     public const int Version13 = 0x13;
+
+    public static class OpsLimit
+    {
+        public const int Interactive = 4;
+        public const int Medium = 4;
+        public const int Moderate = 6;
+        public const int Sensitive = 8;
+    }
+
+    public static class MemoryLimit
+    {
+        public const int Interactive = 32 * 1024;
+        public const int Medium = 64 * 1024;
+        public const int Moderate = 128 * 1024;
+        public const int Sensitive = 512 * 1024;
+    }
 }

@@ -117,7 +117,10 @@ public class Argon2PasswordEncoderTests
     {
         string expectedHash = "$argon2id$v=19$m=16384,t=2,p=1$QUFBQUFBQUFBQUFBQUFBQQ$zGt5MiNPSUOo4/7jBcJMayCPfcsLJ4c0WUxhwGDIYPw";
 
-        _encoder.SaltGenerator = new MockPredictableNumberGenerator(0x41);
+        _encoder = new Argon2PasswordEncoder(16, 32, 1, 16384, 2)
+        {
+            SaltGenerator = new MockPredictableNumberGenerator(0x41),
+        };
         string hash = _encoder.Encode("sometestpassword");
 
         Assert.Equal(expectedHash, hash);

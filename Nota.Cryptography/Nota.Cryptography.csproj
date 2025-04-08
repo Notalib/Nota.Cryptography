@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net462;netstandard2.0;net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>net472;netstandard2.0;net8.0;net9.0</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        <Version>0.1.1</Version>
+        <Version>0.1.2</Version>
         <Authors>Nota</Authors>
         <Description>User friendlier implementations of Argon2 and SecretBox made with managed BouncyCastle.NET primitives.</Description>
         <PackageProjectUrl>https://github.com/Notalib/Nota.Cryptography</PackageProjectUrl>

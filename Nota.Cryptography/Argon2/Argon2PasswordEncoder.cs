@@ -42,8 +42,6 @@ public class Argon2PasswordEncoder : IPasswordEncoder
     private const int DefaultSaltLength = 16;
     private const int DefaultHashLength = 32;
     private const int DefaultParallelism = 1;
-    private const int DefaultMemory = 1 << 14;
-    private const int DefaultIterations = 2;
 
     private readonly int _saltLength;
     private readonly int _hashLength;
@@ -76,10 +74,33 @@ public class Argon2PasswordEncoder : IPasswordEncoder
     /// parallelism of 1, memory cost of 1 &lt;&lt; 14 and 2 iterations.
     /// </summary>
     public Argon2PasswordEncoder()
-        : this(DefaultSaltLength, DefaultHashLength, DefaultParallelism, DefaultMemory, DefaultIterations)
+        : this(ArgonStrength.Medium)
     {
     }
-
+    
+    /// <summary>
+    /// Constructs an Argon2 password encoder with a salt length of 16 bytes, a hash length of 32 bytes,
+    /// parallelism of 1, memory cost of 1 &lt;&lt; 14 and 2 iterations.
+    /// </summary>
+    public Argon2PasswordEncoder(ArgonStrength strength)
+        : this(DefaultSaltLength,
+               DefaultHashLength,
+               DefaultParallelism, 
+               GetArgonOpsAndMemoryLimit(strength).memLimit, 
+               GetArgonOpsAndMemoryLimit(strength).opsLimit)
+    {
+    }
+    
+    private static (int opsLimit, int memLimit) GetArgonOpsAndMemoryLimit(ArgonStrength limit)
+    {
+        return limit switch
+        {
+             ArgonStrength.Medium => (Argon2Constants.OpsLimit.Medium, Argon2Constants.MemoryLimit.Medium),
+             ArgonStrength.Moderate => (Argon2Constants.OpsLimit.Moderate, Argon2Constants.MemoryLimit.Moderate),
+             ArgonStrength.Sensitive => (Argon2Constants.OpsLimit.Sensitive, Argon2Constants.MemoryLimit.Sensitive),
+            _ => (Argon2Constants.OpsLimit.Interactive, Argon2Constants.MemoryLimit.Interactive),
+        };
+    }
     /// <inheritdoc cref="IPasswordEncoder"/>
     public string Encode(string rawPassword)
     {

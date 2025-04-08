@@ -20,7 +20,6 @@ using System.Text;
 
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Utilities.Encoders;
 
 namespace Nota.Cryptography.Argon2;
 
@@ -132,25 +131,24 @@ internal static class Argon2EncodingUtils
             throw new ArgumentException("Amount of performance parameters invalid");
         }
 
-        if (!performanceParams[0].StartsWith("m="))
+        if (!performanceParams[0].StartsWith("m=") || !int.TryParse(performanceParams[0].Substring(2), out int memory))
         {
             throw new ArgumentException("Invalid memory parameter");
         }
+        paramsBuilder.WithMemoryAsKB(memory);
 
-        paramsBuilder.WithMemoryAsKB(int.Parse(performanceParams[0].Substring(2)));
-
-        if (!performanceParams[1].StartsWith("t="))
+        if (!performanceParams[1].StartsWith("t=") || !int.TryParse(performanceParams[1].Substring(2), out int iterations))
         {
             throw new ArgumentException("Invalid iterations parameter");
         }
-
-        paramsBuilder.WithIterations(int.Parse(performanceParams[1].Substring(2)));
-        if (!performanceParams[2].StartsWith("p="))
+        paramsBuilder.WithIterations(iterations);
+        
+        if (!performanceParams[2].StartsWith("p=") || !int.TryParse(performanceParams[2].Substring(2), out int parallelism))
         {
             throw new ArgumentException("Invalid parallelism parameter");
         }
 
-        paramsBuilder.WithParallelism(int.Parse(performanceParams[2].Substring(2)));
+        paramsBuilder.WithParallelism(parallelism);
 
         byte[] salt = Base64.Decode(parts[currentPart++]);
         paramsBuilder.WithSalt(salt);

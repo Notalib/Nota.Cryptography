@@ -31,7 +31,7 @@ public class Argon2EncodingUtilsTests
             .WithMemoryAsKB(1024)
             .WithIterations(3)
             .WithParallelism(2)
-            .WithSalt(Base64.Decode("cRdFbCw23gz2Mlxk"))
+            .WithSalt(Base64.Decode("Y1JkRmJDdzIzZ3oyTWx4aw"))
             .Build()));
 
     private TestDataEntry _testDataEntry2 = new(
@@ -43,7 +43,7 @@ public class Argon2EncodingUtilsTests
             .WithMemoryAsKB(333)
             .WithIterations(5)
             .WithParallelism(2)
-            .WithSalt(Base64.Decode("$4|7y5Alt"))
+            .WithSalt(Base64.Decode("JDR8N3k1QWx0"))
             .Build()));
 
     [Fact]
