@@ -119,7 +119,7 @@ public class Argon2PasswordEncoderTests
 
         _encoder = new Argon2PasswordEncoder(16, 32, 1, 16384, 2)
         {
-            SaltGenerator = new MockPredictableNumberGenerator(0x41),
+            SaltGenerator = new PredictableNumberGenerator(0x41),
         };
         string hash = _encoder.Encode("sometestpassword");
 
@@ -133,7 +133,7 @@ public class Argon2PasswordEncoderTests
 
         _encoder = new Argon2PasswordEncoder(16, 32, 4, 512, 5)
         {
-            SaltGenerator = new MockPredictableNumberGenerator(0x41),
+            SaltGenerator = new PredictableNumberGenerator(0x41),
         };
 
         string hash = _encoder.Encode("sometestpassword");

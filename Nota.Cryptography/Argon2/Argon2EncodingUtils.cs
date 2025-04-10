@@ -52,7 +52,7 @@ internal static class Argon2EncodingUtils
     /// <exception cref="ArgumentException">If the Argon2Parameters are invalid.</exception>
     public static string Encode(byte[] hash, Argon2Parameters parameters)
     {
-        StringBuilder stringBuilder = new();
+        byte[] salt = parameters.GetSalt();
         string type = parameters.Type switch
         {
             Argon2Constants.Argon2d => "$argon2d",
@@ -60,25 +60,8 @@ internal static class Argon2EncodingUtils
             Argon2Constants.Argon2id => "$argon2id",
             _ => throw new ArgumentException("Invalid algorithm type: " + parameters.Type),
         };
-
-        stringBuilder.Append(type);
-        stringBuilder.Append("$v=")
-            .Append(parameters.Version)
-            .Append("$m=")
-            .Append(parameters.Memory)
-            .Append(",t=")
-            .Append(parameters.Iterations)
-            .Append(",p=")
-            .Append(parameters.Parallelism);
-
-        if (parameters.GetSalt() != null)
-        {
-            stringBuilder.Append('$').Append(Base64.Encode(parameters.GetSalt()));
-        }
-
-        stringBuilder.Append('$').Append(Base64.Encode(hash));
-
-        return stringBuilder.ToString();
+        
+        return $"{type}$v={parameters.Version}$m={parameters.Memory},t={parameters.Iterations},p={parameters.Parallelism}${Base64.Encode(salt)}${Base64.Encode(hash)}";
     }
 
     /// <summary>
