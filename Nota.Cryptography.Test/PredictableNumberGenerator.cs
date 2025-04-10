@@ -15,11 +15,11 @@
  */
 namespace Nota.Cryptography.Test;
 
-public class MockPredictableNumberGenerator : IRandomNumberGenerator
+public class PredictableNumberGenerator : IRandomNumberGenerator
 {
     private readonly byte _value;
 
-    public MockPredictableNumberGenerator(byte value)
+    public PredictableNumberGenerator(byte value)
     {
         _value = value;
     }
